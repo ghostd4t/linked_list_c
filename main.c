@@ -31,20 +31,51 @@ int is_empty(Node * list){
     return list == NULL;
 }
 
-Data pop(Node ** plist){
-    Node * p = *plist;
-    Data res = p -> data;
-    *plist = p -> next;
-    free(p);
-    return res;
+int pop(Node ** head) {
+    int retval = -1;
+    Node * next_node = NULL;
+
+    if (*head == NULL) {
+        return -1;
+    }
+
+    next_node = (*head)->next;
+    retval = (*head)->data;
+    free(*head);
+    *head = next_node;
+
+    return retval;
 }
 
-void killroot(Node* root){
-    Node* temp;
-    temp = root->next;
-    temp->prev = NULL;
-}
+int remove_by_index(Node ** head, int n) {
+    int i = 0;
+    int retval = -1;
+    Node * current = *head;
+    Node * temp_node = NULL;
 
+    if (n == 0) {
+        return pop(head);
+    }
+
+    for (i = 0; i < n-1; i++) {
+        if (current->next == NULL) {
+            return -1;
+        }
+        current = current->next;
+    }
+
+    if (current->next == NULL) {
+        return -1;
+    }
+
+    temp_node = current->next;
+    retval = temp_node->data;
+    current->next = temp_node->next;
+    free(temp_node);
+    print(*head);
+    return retval;
+
+}
 
 int main(){
 
@@ -90,20 +121,7 @@ int main(){
     printf("[+] Max element: %d\n", max_element);
     printf("[!] Erasing max elements...\n");
     
-    
-    for(Node * p = list; p != NULL; p = p -> next){
-        if(p-> data == max_element){
-            if(p->prev == NULL){
-                killroot(p);
-            }else{
-                Data d = pop(&list);
-            }
-     
-
-        }
-        print(list);
-    }
-
+    remove_by_index(&list, max_element);
     /*   
     for(Node * p = list; p != NULL; p = p -> next){
         if(is_empty(list)){
